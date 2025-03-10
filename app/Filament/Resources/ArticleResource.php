@@ -67,7 +67,7 @@ final class ArticleResource extends Resource
     /**
      * The cluster used for grouping related resources.
      *
-     * @var string|null
+     * @var class-string<\Filament\Clusters\Cluster>|null
      */
     protected static ?string $cluster = Articles::class;
 
@@ -85,12 +85,13 @@ final class ArticleResource extends Resource
     /**
      * Returns an array of relation manager classes that define related resources.
      *
-     * @return array  The relation manager classes.
+     * @return array<int, class-string>  The relation manager classes.
      */
     public static function getRelations(): array
     {
         return [
             \App\Filament\Resources\ArticleResource\RelationManagers\LabelsRelationManager::class,
+            \App\Filament\Resources\ArticleResource\RelationManagers\NotesRelationManager::class,
         ];
     }
 
@@ -145,7 +146,8 @@ final class ArticleResource extends Resource
                     ->searchable()
                     ->placeholder('onbekend')
                     ->icon('heroicon-o-user-circle')
-                    ->iconColor('primary'),
+                    ->iconColor('primary')
+                    ->toggleable(),
                 TextColumn::make('word')
                     ->searchable()
                     ->weight(FontWeight::SemiBold)
@@ -154,15 +156,18 @@ final class ArticleResource extends Resource
                 TextColumn::make('description')
                     ->label('Beschrijving')
                     ->searchable()
+                    ->words(10)
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->label('Toegevoegd op')
                     ->sortable()
-                    ->date(),
+                    ->date()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
                     ->label('Laast gewijzigd')
                     ->sortable()
-                    ->date(),
+                    ->date()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()->hiddenLabel(),
@@ -193,7 +198,7 @@ final class ArticleResource extends Resource
      * Defines the routes for the resource's pages.
      * The pages include listing, creating, vieuwing, and editing articles.
      *
-     * @return array  An associative array mapping page keys to their routes.
+     * @return array<string, \Filament\Resources\Pages\PageRegistration>  An associative array mapping page keys to their routes.
      */
     public static function getPages(): array
     {

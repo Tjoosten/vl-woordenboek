@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use JetBrains\PhpStorm\Deprecated;
 use Overtrue\LaravelLike\Traits\Likeable;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
@@ -32,11 +31,12 @@ use Kenepa\ResourceLock\Models\Concerns\HasLocks;
  * @property int            $id               The unique identifier for the article
  * @property string         $word             The dictionary word being defined
  * @property ArticleStates  $state            The current state of the article in its lifecycle
+ * @property string|null    $keywords         The keywords that are attached to the article
  * @property string         $description      The detailed explanation of the word
  * @property int            $author_id        The ID of the user who created the article
  * @property LanguageStatus $status           The current language validation status
  * @property string|null    $example          Optional usage example of the word
- * @property array|null     $characteristics  Additional word characteristics
+ * @property string|null    $characteristics  Additional word characteristics
  * @property int|null       $editor_id        The ID of the assigned editor
  * @property \Carbon\Carbon $created_at       Timestamp of when the article was created
  * @property \Carbon\Carbon $updated_at       Timestamp of the last update
@@ -57,15 +57,15 @@ final class Article extends Model implements AuditableContract
      * The attributes that can be mass assigned when creating or updating an article.
      * Security measure to prevent unintended attribute modifications.
      *
-     * @var array<string>
+     * @var list<string>
      */
-    protected $fillable = ['word', 'state', 'description', 'author_id', 'status', 'example', 'characteristics'];
+    protected $fillable = ['word', 'state', 'description', 'keywords', 'author_id', 'status', 'example', 'characteristics'];
 
     /**
      * Attributes excluded from the audit trail.
      * Editor ID changes are not tracked to reduce noise in the audit logs.
      *
-     * @var array<string>
+     * @var list<string>
      */
     protected $auditExclude = ['editor_id'];
 
@@ -89,7 +89,7 @@ final class Article extends Model implements AuditableContract
      *
      * Exmaple states flow: New -> Draft -> Approval -> Published -> Archived
      *
-     * @return ArticleSateContract - The correcponding state class for the current dictionary article
+     * @return ArticleStateContract - The correcponding state class for the current dictionary article
      */
     public function articleStatus(): ArticleStateContract
     {
@@ -106,23 +106,11 @@ final class Article extends Model implements AuditableContract
      * Defines the relationship between an article and its author.
      * Each article is created by exactly one user (author). This relationship is crucial for tracking article ownership and attribution.
      *
-     * @return BelongsTo<User, Article>
+     * @return BelongsTo<User, covariant $this>
      */
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
-    }
-
-    /**
-     * Defines the relationship between an article and its definitions.
-     * An article can have multiple definitions to cover different meanings or regional variations of the word.
-     *
-     * @return HasMany<Definition>
-     */
-    #[Deprecated('Needs to be removed in a later phase. ')]
-    public function definitions(): HasMany
-    {
-        return $this->hasMany(Definition::class);
     }
 
     /**
@@ -137,13 +125,28 @@ final class Article extends Model implements AuditableContract
      * - Tracking when labels were assigned (created_at in pivot)
      * - Maintaining updated_at timestamps for label assignments
      *
-     * @return BelongsToMany<Label> The relationship instance for article labels
+     * @return BelongsToMany<Label, covariant $this> The relationship instance for article labels
      */
     public function labels(): BelongsToMany
     {
         return $this->belongsToMany(Label::class)
             ->withPivot('created_at')
             ->withTimestamps();
+    }
+
+    /**
+     * Establishes the one-to-many relationship between dictionary articles and their associated notes.
+     * This relationship allows articles to maintain multiple textual annotations, providing additional context, clarifications, or editorial comments.
+     * Each note is directly linked to its parent article through a foreign key constraint, ensuring referential integrity in the database.
+     *
+     * The relationship enables efficient access to an article's notes through Laravel's Eloquent ORM, supporting both eager and lazy loading patterns.
+     * This implementation facilitates common operations like retrieving all notes for an article, adding new notes, and managing existing annotations within the dictionary entry context.
+     *
+     * @return HasMany<Note, covariant $this> The relationship instance managing the article's notes
+     */
+    public function notes(): HasMany
+    {
+        return $this->hasMany(Note::class);
     }
 
     /**

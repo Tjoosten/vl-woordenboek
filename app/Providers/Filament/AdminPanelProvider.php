@@ -87,11 +87,16 @@ final class AdminPanelProvider extends PanelProvider
             ]);
     }
 
+    /**
+     * @return array<string, string>
+     */
     private function defaultLoginsDuringDevelopment(): array
     {
         return [
-            'Technisch beheerder' => 'developer@domain.tld',
-            'Administrator' => 'administrator@domain.tld',
+            'Redacteur' => 'Redacteur@domain.tld',
+            'Eind redacteur' => 'Eindredacteur@domain.tld',
+            'Ontwikkelaar' => 'Ontwikkelaar@domain.tld',
+            'Administrator' => 'Administrator@domain.tld',
         ];
     }
 }

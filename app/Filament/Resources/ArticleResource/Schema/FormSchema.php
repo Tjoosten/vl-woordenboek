@@ -20,6 +20,9 @@ final readonly class FormSchema
             ->columns(12);
     }
 
+    /**
+     * @return array<int, Components\Select|Components\TextInput|Components\Textarea|Components\RichEditor>
+     */
     public static function getDetailSchema(): array
     {
         return [
@@ -42,22 +45,29 @@ final readonly class FormSchema
                 ->columnSpan(6)
                 ->required()
                 ->maxLength(255),
+            Components\TextInput::make('keywords')
+                ->label('Kernwoorden')
+                ->translateLabel()
+                ->placeholder('Kernwoord 1, Kernwoord 2, Kernwoord 3, etc...')
+                ->columnSpanFull(),
             Components\Textarea::make('description')
                 ->label('Beschrijving')
                 ->columnSpan(12)
                 ->cols(2)
                 ->placeholder('De beschrijving van het woord dat je wenst toe te voegen.')
                 ->required(),
-            Components\Textarea::make('example')
+            Components\RichEditor::make('example')
                 ->label('Voorbeeld')
+                ->toolbarButtons(['bold', 'italic', 'link', 'redo', 'strike', 'underline', 'undo'])
                 ->placeholder('Probeer zo helder mogelijk te zijn')
-                ->cols(2)
                 ->columnSpan(12)
-                ->required()
-                ->maxLength(255),
+                ->required(),
         ];
     }
 
+    /**
+     * @return array<int, Components\Select|Components\Radio>
+     */
     public static function getStatusAndRegionDetails(): array
     {
         return [
