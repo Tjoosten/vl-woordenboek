@@ -31,7 +31,7 @@ final readonly class FormSchema
                 ->label('Artikel status')
                 ->required()
                 ->columnSpan(2)
-                ->disabledOn('edit')
+                ->hiddenOn('edit')
                 ->default(ArticleStates::New->value)
                 ->options([
                     ArticleStates::New->value => ArticleStates::New->getLabel(),
@@ -65,6 +65,10 @@ final readonly class FormSchema
                 ->preload()
                 ->native(false)
                 ->columnSpanFull(),
+            Components\TextInput::make('image_url')
+                ->label('Afbeelding')
+                ->columnSpan(12)
+                ->maxLength(255),
             Components\RichEditor::make('description')
                 ->label('Beschrijving')
                 ->columnSpanFull()
@@ -99,6 +103,24 @@ final readonly class FormSchema
             Components\Radio::make('status')
                 ->columnSpanFull()
                 ->options(LanguageStatus::class)
+        ];
+    }
+
+    /**
+     * @return array<int, \Filament\Forms\Components\KeyValue>
+     */
+    public static function getSourceSchema(): array
+    {
+        return [
+            Components\KeyValue::make('sources')
+                ->label('Geraadpleegde bronnen')
+                ->reorderable()
+                ->keyLabel('Naam')
+                ->keyPlaceholder('- naam van de bron')
+                ->valueLabel('Url / Artikel')
+                ->valuePlaceholder('https://woordenlijst.org/')
+                ->addActionLabel('Nieuwe bron toevoegen')
+                ->columnSpanFull()
         ];
     }
 }

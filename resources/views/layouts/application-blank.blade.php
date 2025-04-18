@@ -11,8 +11,9 @@
     <title>{{ config('app.name', 'Laravel') }} | {{ $title ?? null }}</title>
 
     <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
@@ -77,6 +78,12 @@
                     </li>
 
                     <li class="nav-item">
+                        <a href="https://www.forum.chimpy.be" class="nav-link" target="_blank"">
+                            <x-heroicon-o-chat-bubble-left-right class="icon me-1"/> Forum
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
                         <a href="" class="nav-link">
                             <x-heroicon-s-envelope class="icon me-1" /> Contact
                         </a>
@@ -89,7 +96,7 @@
                     @guest
                         @if (Route::has('filament.admin.auth.login'))
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('filament.admin.auth.login') }}">
+                                <a class="nav-link {{ active('login') }}" href="{{ route('login') }}">
                                     <x-tabler-login-2 class="icon me-1" /> {{ __('Login') }}
                                 </a>
                             </li>
@@ -97,12 +104,14 @@
 
                         @if (Route::has('register'))
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('register') }}">{{ __('Registreren') }}</a>
+                                <a class="nav-link {{ active('register') }}" href="{{ route('register') }}">
+                                    <x-heroicon-o-user-plus class="me-1 icon"/> {{ __('Registreren') }}
+                                </a>
                             </li>
                         @endif
                     @else
                         <li class="nav-item">
-                            <a href="{{ route('profile', auth()->user()) }}" class="nav-link">
+                            <a href="{{ route('profile.settings.security') }}" class="nav-link">
                                 <x-heroicon-s-user-circle class="icon me-1" /> {{ Auth::user()->name }}
                             </a>
                         </li>
@@ -126,7 +135,7 @@
         @yield('content')
     </main>
 
-    <footer class="footer mt-auto py-3 bg-body-tertiary">
+    <footer class="footer mt-auto py-3 bg-transparent">
         <div class="container">
             <span class="fw-bold text-body-secondary">
                 &copy; {{ date('Y') }}, {{ config('app.name', 'Laravel') }}
