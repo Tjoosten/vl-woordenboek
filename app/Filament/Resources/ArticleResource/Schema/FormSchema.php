@@ -6,6 +6,7 @@ namespace App\Filament\Resources\ArticleResource\Schema;
 
 use App\Enums\ArticleStates;
 use App\Enums\LanguageStatus;
+use App\Models\Article;
 use App\UserTypes;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components;
@@ -71,12 +72,14 @@ final readonly class FormSchema
                 ->maxLength(255),
             Components\RichEditor::make('description')
                 ->label('Beschrijving')
+                ->formatStateUsing(fn (Article $article) => nl2br($article->description))
                 ->columnSpanFull()
                 ->toolbarButtons(['bold', 'italic', 'redo', 'strike', 'underline', 'undo'])
                 ->placeholder('De beschrijving van het woord dat je wenst toe te voegen.')
                 ->required(),
             Components\RichEditor::make('example')
                 ->label('Voorbeeld')
+                ->formatStateUsing(fn (Article $article) => nl2br($article->example))
                 ->toolbarButtons(['bold', 'italic', 'redo', 'strike', 'underline', 'undo'])
                 ->placeholder('Probeer zo helder mogelijk te zijn')
                 ->columnSpanFull()

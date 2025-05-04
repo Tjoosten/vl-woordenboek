@@ -64,7 +64,7 @@
                     </ul>
 
                     <div class="mt-2 text-muted">
-                        {!! formatUserContent(str($word->description)->sanitizeHtml()) !!}
+                        {!! formatUserContent(nl2br(str($word->description)->sanitizeHtml())) !!}
                     </div>
                 </div>
 
