@@ -15,5 +15,6 @@ final class DatabaseSeeder extends Seeder
         $this->call(LabelTableSeeder::class);
         $this->call(PartOfSpeechTableSeeder::class);
         $this->call(DisclaimerTableSeeder::class);
+        $this->call(LevelTableSeeder::class);
     }
 }

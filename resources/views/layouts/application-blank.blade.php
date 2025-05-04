@@ -56,11 +56,14 @@
                             <x-heroicon-s-language class="icon me-1" /> Random woord
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="" class="nav-link">
-                            <x-heroicon-o-chart-bar class="icon me-1" /> Statistieken
-                        </a>
-                    </li>
+
+                    @auth
+                        <li class="nav-item">
+                            <a href="{{ route('account.scoreboard') }}" class="nav-link">
+                                <x-heroicon-o-chart-bar class="icon me-1" /> Mijn scorebord
+                            </a>
+                        </li>
+                    @endauth
 
                     <li class="nav-item dropdown">
                         <a id="infoDropdown" class="nav-link dropdown-toggle" href="#" role="button"

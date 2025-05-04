@@ -17,6 +17,8 @@ use Overtrue\LaravelLike\Traits\Liker;
 use Cog\Contracts\Ban\Bannable as BannableInterface;
 use Cog\Laravel\Ban\Traits\Bannable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use LevelUp\Experience\Concerns\GiveExperience;
+use LevelUp\Experience\Concerns\HasAchievements;
 
 /**
  * User represents an authenticated account in the 'Vlaams woordenboek application'.
@@ -50,6 +52,7 @@ final class User extends Authenticatable implements FilamentUser, BannableInterf
     use Notifiable;
     use Liker;
     use Bannable;
+    use GiveExperience;
 
     /**
      * Sepcifies which attributes can be mass assigned when creating or updating user records.
