@@ -114,7 +114,7 @@ final readonly class ArticlePolicy
             return false;
         }
 
-        return $article->state->is(ArticleStates::Approval) && $editorRelation->exists() && $editorRelation->isNot($user);
+        return  $editorRelation->exists() && $editorRelation->isNot($user);
     }
 
     /**

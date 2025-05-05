@@ -134,4 +134,9 @@ final class EditWord extends EditRecord
 
         return $data;
     }
+
+    protected function getRedirectUrl(): ?string
+    {
+        return static::getResource()::getUrl('view', ['record' => $this->record]);
+    }
 }
